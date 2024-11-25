@@ -47,6 +47,3 @@ def redirect_to_original(short_code):
 def list_shortened_urls():
     """List all shortened URLs (for debugging purposes)."""
     return jsonify(url_map)
-
-if __name__ == '__main__':
-    app.run(debug=True)
