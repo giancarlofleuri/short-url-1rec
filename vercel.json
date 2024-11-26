@@ -1,23 +1,13 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "index.js",
-      "use": "@vercel/node"
-    }
-  ],
   "routes": [
     {
       "src": "/shorten",
-      "dest": "index.js"
-    },
-    {
-      "src": "/list",
-      "dest": "index.js"
+      "dest": "/index.js"
     },
     {
       "src": "/(.*)",
-      "dest": "index.js"
+      "dest": "/index.js"
     }
   ]
 }
