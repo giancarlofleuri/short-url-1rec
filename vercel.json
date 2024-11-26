@@ -8,12 +8,11 @@
   ],
   "routes": [
     {
-      "src": "/shorten",
-      "dest": "/main.js"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/main.js"
+      "dest": "main.js"
     }
-  ]
+  ],
+  "env": {
+    "MONGODB_URI": "@mongodb_uri"
+  }
 }
