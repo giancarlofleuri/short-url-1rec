@@ -1,13 +1,19 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "main.js",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
       "src": "/shorten",
-      "dest": "/index.js"
+      "dest": "/main.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.js"
+      "dest": "/main.js"
     }
   ]
 }
