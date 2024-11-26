@@ -1,34 +1,42 @@
 const express = require('express');
 const app = express();
 
-const AUTH_TOKEN = 'a1iOjACwaXNo690iBNW0bdIq';
-
-// Middleware to validate token
-app.use((req, res, next) => {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || authHeader.split(' ')[1] !== AUTH_TOKEN) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    next();
-});
-
+// Middleware
 app.use(express.json());
 
-// Your routes here
+// In-memory database for URL mapping
+const urlMap = {};
+
+// Short domain
+const SHORT_DOMAIN = "https://short-url-1rec-pf4l.vercel.app";
+
+// Generate a random short code
+const generateShortCode = () => Math.random().toString(36).substring(2, 8);
+
+// Shorten URL endpoint
 app.post('/shorten', (req, res) => {
-    res.json({ message: 'Shorten endpoint works!' });
+    const { url } = req.body;
+
+    if (!url) {
+        return res.status(400).json({ error: 'URL is required' });
+    }
+
+    const shortCode = generateShortCode();
+    urlMap[shortCode] = url;
+
+    return res.json({ short_url: `${SHORT_DOMAIN}/${shortCode}` });
 });
 
-app.get('/list', (req, res) => {
-    res.json({ message: 'List endpoint works!' });
-});
-
+// Redirect endpoint
 app.get('/:shortCode', (req, res) => {
-    res.json({ message: `Shortcode endpoint works for: ${req.params.shortCode}` });
+    const { shortCode } = req.params;
+
+    const originalUrl = urlMap[shortCode];
+    if (!originalUrl) {
+        return res.status(404).json({ error: 'URL not found' });
+    }
+
+    return res.redirect(originalUrl);
 });
 
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
-});
+module.exports = app;
