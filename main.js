@@ -1,38 +1,34 @@
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-const urlMap = {};
+const AUTH_TOKEN = 'a1iOjACwaXNo690iBNW0bdIq';
+
+// Middleware to validate token
+app.use((req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || authHeader.split(' ')[1] !== AUTH_TOKEN) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    next();
+});
 
 app.use(express.json());
 
-// Route: Shorten URL
+// Your routes here
 app.post('/shorten', (req, res) => {
-  const originalUrl = req.body.url;
-  if (!originalUrl) {
-    return res.status(400).json({ error: "URL is required" });
-  }
-  
-  const shortCode = Math.random().toString(36).substring(2, 8);
-  urlMap[shortCode] = originalUrl;
-
-  res.json({ short_url: `https://1REC.com/${shortCode}` });
+    res.json({ message: 'Shorten endpoint works!' });
 });
 
-// Route: Redirect Short URL
-app.get('/:shortCode', (req, res) => {
-  const originalUrl = urlMap[req.params.shortCode];
-  if (!originalUrl) {
-    return res.status(404).json({ error: "URL not found" });
-  }
-  res.redirect(originalUrl);
-});
-
-// Route: List URLs
 app.get('/list', (req, res) => {
-  res.json(urlMap);
+    res.json({ message: 'List endpoint works!' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.get('/:shortCode', (req, res) => {
+    res.json({ message: `Shortcode endpoint works for: ${req.params.shortCode}` });
+});
+
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
 });
