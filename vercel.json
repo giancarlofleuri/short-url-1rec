@@ -8,14 +8,16 @@
   ],
   "routes": [
     {
+      "src": "/shorten",
+      "dest": "index.js"
+    },
+    {
+      "src": "/list",
+      "dest": "index.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "index.js"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/shorten",
-      "destination": "/"
     }
   ]
 }
