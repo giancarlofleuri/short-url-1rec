@@ -1,29 +1,38 @@
 const express = require('express');
 const app = express();
-const crypto = require('crypto');
+const PORT = process.env.PORT || 3000;
 
-// In-memory database for URL storage
 const urlMap = {};
 
-// Your short domain
-const SHORT_DOMAIN = "https://1REC.com";
-
-// Middleware to parse JSON requests
 app.use(express.json());
 
-// Endpoint to shorten a URL
+// Route: Shorten URL
 app.post('/shorten', (req, res) => {
-    const originalUrl = req.body.url;
-    if (!originalUrl) {
-        return res.status(400).json({ error: "URL is required" });
-    }
+  const originalUrl = req.body.url;
+  if (!originalUrl) {
+    return res.status(400).json({ error: "URL is required" });
+  }
+  
+  const shortCode = Math.random().toString(36).substring(2, 8);
+  urlMap[shortCode] = originalUrl;
 
-    // Check if the URL is already shortened
-    const existingCode = Object.keys(urlMap).find(
-        (key) => urlMap[key] === originalUrl
-    );
-    if (existingCode) {
-        return res.json({ short_url: `${SHORT_DOMAIN}/${existingCode}` });
-    }
+  res.json({ short_url: `https://1REC.com/${shortCode}` });
+});
 
-    // Generate a unique short code
+// Route: Redirect Short URL
+app.get('/:shortCode', (req, res) => {
+  const originalUrl = urlMap[req.params.shortCode];
+  if (!originalUrl) {
+    return res.status(404).json({ error: "URL not found" });
+  }
+  res.redirect(originalUrl);
+});
+
+// Route: List URLs
+app.get('/list', (req, res) => {
+  res.json(urlMap);
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
